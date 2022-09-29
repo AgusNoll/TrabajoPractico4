@@ -19,7 +19,11 @@ def main():
         op = int(input('Seleccione una Opcion: '))
 
         if op == 1:
-            soporte.cargar_archivo(fd)
+            repositorios_sin_repetir= soporte.repos()
+            soporte.cargar_archivo(fd, repositorios_sin_repetir)
+
+        elif op == 2:
+            pass
 
 
 if __name__ == '__main__':
