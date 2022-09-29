@@ -34,7 +34,7 @@ def leer(arreglo):
 
 def repos():
     vector_repositorio = []
-    repo_sin_repetir = []
+    repositorio_sin_repetir = []
 
     if os.path.exists('proyectos.csv'):
         m = open('proyectos.csv', mode="rt", encoding="utf8")
@@ -44,21 +44,22 @@ def repos():
             vector_repositorio.append(repositorio)
 
         for i in vector_repositorio:
-            if not(i in repo_sin_repetir):
-                repo_sin_repetir.append(i)
+            if not(i in repositorio_sin_repetir):
+                repositorio_sin_repetir.append(i)
 
         m.flush()
         m.close()
 
-        return repo_sin_repetir  # [A, B, C]
+        return repositorio_sin_repetir  # [A, B, C]
 
 
 def cargar_archivo(fd, rep):
     ind = 0
     vector = []
-
+    matriz = []
     if os.path.exists(fd):
         m = open(fd, mode="rt", encoding="utf8")
+        t = os.path.getsize(fd)
 
         for line in m:
             token = line.split('|')
@@ -67,6 +68,7 @@ def cargar_archivo(fd, rep):
                 # repositorio [A, B, C, B, C]
                 if token[1] in rep:  # [A, B, C]
                     rep.remove(token[1])
+
 
                     nombre = str(token[0])
                     repositorio = str(token[1])
@@ -85,8 +87,15 @@ def cargar_archivo(fd, rep):
 
 
 
+
+
                     #v = Proyecto(nombre, repositorio, descripcion, fecha, lenguaje, likes, tags, url)
-                    #vector.append(v)
+
+
+
+
+                    # vector.append(v)
+
 
             else:
                 pass
