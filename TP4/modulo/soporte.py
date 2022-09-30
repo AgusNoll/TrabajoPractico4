@@ -22,16 +22,6 @@ class Fecha:
         self.dia = d
 
 
-def leer(arreglo):
-    print(f'Nombre de Usuario: {arreglo.nombre_usuario}', end='- ')
-    print(f'Repositorio: {arreglo.repositorio}', end='- ')
-    print(f'Fecha de Actualizacion {arreglo.fecha_actualizacion}', end='- ')
-    print(f'Lenguaje: {arreglo.lenguaje}', end='- ')
-    print(f'Likes: {arreglo.likes}', end='- ')
-    print(f'Tags: {arreglo.tags}', end='- ')
-    print(f'URL: {arreglo.url}')
-
-
 def repos():
     vector_repositorio = []
     repositorio_sin_repetir = []
@@ -44,7 +34,7 @@ def repos():
             vector_repositorio.append(repositorio)
 
         for i in vector_repositorio:
-            if not(i in repositorio_sin_repetir):
+            if not (i in repositorio_sin_repetir):
                 repositorio_sin_repetir.append(i)
 
         m.flush()
@@ -69,7 +59,6 @@ def cargar_archivo(fd, rep):
                 if token[1] in rep:  # [A, B, C]
                     rep.remove(token[1])
 
-
                     nombre = str(token[0])
                     repositorio = str(token[1])
                     descripcion = str(token[2])
@@ -85,17 +74,8 @@ def cargar_archivo(fd, rep):
 
                     url = str(token[7])
 
-
-
-
-
-                    #v = Proyecto(nombre, repositorio, descripcion, fecha, lenguaje, likes, tags, url)
-
-
-
-
-                    # vector.append(v)
-
+                    v = Proyecto(nombre, repositorio, descripcion, fecha, lenguaje, likes, tags, url)
+                    vector.append(v)
 
             else:
                 pass
@@ -106,3 +86,43 @@ def cargar_archivo(fd, rep):
         m.close()
 
         return vector
+
+
+def contar_lenguajes(fd):
+    v = []
+    ind = 0
+    m = open(fd, 'rt')
+    for line in m:
+        token = line.split('|')
+        if ind != 0:
+            leng = token[4]
+            if leng != '':
+                if not (leng in v):
+                    v.append(leng)
+                else:
+                    pass
+        ind += 1
+    return v
+
+
+def proyectos_por_lenguaje(arreglo, leng):
+    n = len(leng)
+    acu = [0] * n
+
+    for line in arreglo:
+        if line.lenguaje in leng:
+            acu[leng.index(line.lenguaje)] += 1
+
+    n = len(acu)
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            if acu[i] < acu[j]:
+                acu[i], acu[j] = acu[j], acu[i]
+                leng[i], leng[j] = leng[j], leng[i]
+
+    txt = '{:^10} | {:>30}'.format('Cantidad', 'Lenguaje')
+    print(txt)
+
+    for i in range(len(acu)):
+        tabla = '{:^10} | {:>30}'.format(acu[i], leng[i])
+        print(tabla)
