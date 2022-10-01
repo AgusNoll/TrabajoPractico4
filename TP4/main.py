@@ -26,11 +26,17 @@ def main():
             arreglo = soporte.cargar_archivo(fd, repositorios_sin_repetir)
 
         elif op == 2:
-            pass
+            soporte.filtrar_tag(arreglo)
 
         elif op == 3:
             leng = soporte.contar_lenguajes(fd)
             soporte.proyectos_por_lenguaje(arreglo, leng)
+
+        elif op == 4:
+            soporte.popularidad(arreglo, matriz=[]*12, acu_stars=[0]*12, acu_proyectos=[0]*12)
+
+        elif op == 5:
+            soporte.proyecto_actualizado(arreglo)
 
         elif op == 8:
             print('Saliendo...')
