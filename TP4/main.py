@@ -1,8 +1,11 @@
 from modulo import soporte
 
+
 def main():
     fd = 'proyectos.csv'
     arreglo = []
+    matriz_total = []
+    ind = 0
     menu ='\nEscoja una opcion\n' \
           '1. Cargar\n' \
           '2. Flitrar por tags\n' \
@@ -29,14 +32,32 @@ def main():
             soporte.filtrar_tag(arreglo)
 
         elif op == 3:
-            leng = soporte.contar_lenguajes(fd)
-            soporte.proyectos_por_lenguaje(arreglo, leng)
+            if len(arreglo) != 0:
+                leng = soporte.contar_lenguajes(fd)
+                soporte.proyectos_por_lenguaje(arreglo, leng)
+            else:
+                print('Opcion "1. Cargar" para continuar')
 
         elif op == 4:
-            soporte.popularidad(arreglo, matriz=[]*12, acu_stars=[0]*12, acu_proyectos=[0]*12)
+            if len(arreglo) != 0:
+                matriz_total = soporte.popularidad(arreglo, ind)
+                ind += 1
+            else:
+                print('\nCargar Arreglo...')
+                print('Opcion "1. Cargar" para continuar')
 
         elif op == 5:
             soporte.proyecto_actualizado(arreglo)
+
+        elif op == 6:
+            if len(matriz_total) != 0:
+                soporte.guardar_populares(matriz_total)
+            else:
+                print('\nCargue la Matriz...')
+                print('Opcion "4. Popularidad" para continuar')
+
+        elif op == 7:
+            soporte.mostrar_archivo()
 
         elif op == 8:
             print('Saliendo...')

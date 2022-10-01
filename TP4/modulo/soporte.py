@@ -1,6 +1,7 @@
 import os.path
 import datetime
 import pickle
+import os.path
 
 
 class Proyecto:
@@ -17,25 +18,26 @@ class Proyecto:
 
 def leer_stars(arreglo):
 
-    if 0 < arreglo.likes < 10.0:
+    if 0 < arreglo.likes <= 10.0:
         arreglo.likes = 1
-    elif 10.1 < arreglo.likes < 20.0:
+    elif 10.1 < arreglo.likes <= 20.0:
         arreglo.likes = 2
-    elif 20.1 < arreglo.likes < 30.0:
+    elif 20.1 < arreglo.likes <= 30.0:
         arreglo.likes = 3
-    elif 30.1 < arreglo.likes < 40.0:
+    elif 30.1 < arreglo.likes <= 40.0:
         arreglo.likes = 4
-    elif 40.1 < arreglo.likes:
+    elif 40.1 <= arreglo.likes:
         arreglo.likes = 5
 
-    txt = '{:<20} | {:^15} | {:^10}'.format(arreglo.repositorio, arreglo.fecha_actualizacion, arreglo.likes)
+    txt = '{:<40} | {:^10} | {:^5}'.format(arreglo.repositorio, arreglo.fecha_actualizacion, arreglo.likes)
     print(txt)
 
-class Fecha:
-    def __init__(self, a, m, d):
-        self.year = a
-        self.mes = m
-        self.dia = d
+
+class Matriz:
+    def __init__(self, mes, estrellas, cant_proyectos):
+        self.mes = mes
+        self.estrellas = estrellas
+        self.cant_proyectos = cant_proyectos
 
 
 def repos():
@@ -97,19 +99,19 @@ def likes_por_estrellas(arreglo):
             arreglo[i].likes = 5
 
 
-
 def cargar_archivo(fd, rep):
     ind = 0
     vector = []
     matriz = []
     if os.path.exists(fd):
+        tags = ''
         m = open(fd, mode="rt", encoding="utf8")
         t = os.path.getsize(fd)
 
         for line in m:
             token = line.split('|')
 
-            if ind != 0: # Condicional para que no cuente la primera linea
+            if ind != 0: # Condicional para que no cuente la primera línea
 
                 if token[1] in rep: # Condicional para que los repositorios no se repitan
 
@@ -141,10 +143,6 @@ def cargar_archivo(fd, rep):
         m.flush()
         m.close()
 
-        for i in range(len(vector)):
-            pass
-            #print(vector[i].fecha_actualizacion, ' | ', vector[i].url)
-
         return vector
 
 
@@ -154,13 +152,18 @@ def contar_lenguajes(fd):
     m = open(fd, 'rt')
     for line in m:
         token = line.split('|')
+
         if ind != 0:
             leng = token[4]
+
             if leng != '':
+
                 if not (leng in v):
                     v.append(leng)
+
                 else:
                     pass
+
         ind += 1
     return v
 
@@ -180,11 +183,11 @@ def proyectos_por_lenguaje(arreglo, leng):
                 acu[i], acu[j] = acu[j], acu[i]
                 leng[i], leng[j] = leng[j], leng[i]
 
-    txt = '{:^10} | {:^30}'.format('Cantidad', 'Lenguaje')
+    txt = '{:^10} | {:^20}'.format('Cantidad', 'Lenguaje')
     print(txt)
 
     for i in range(len(acu)):
-        tabla = '{:^10} | {:>30}'.format(acu[i], leng[i])
+        tabla = '{:^10} | {:<20}'.format(acu[i], leng[i])
         print(tabla)
 
 
@@ -192,11 +195,12 @@ def filtrar_tag(v):
     bandera = False
 
     if len(v) == 0:
-        print('No hay datos cargados...')
-        print()
+        print('\nNo hay datos cargados...')
+        print('Opcion "1. Cargar" para continuar')
         return
 
     tag_x = input('Ingrese un nuevo tag: ')
+    print()
     fd = 'archivo_copia.csv'
     m = open(fd, 'wt')
     for i in range(len(v)):
@@ -213,8 +217,7 @@ def filtrar_tag(v):
     m.flush()
     m.close()
     if bandera:
-        print('Archivo creado....')
-        print()
+        print(f'\n --- Archivo "{fd}" creado...---')
 
 
 def leer(arreglo):
@@ -230,7 +233,7 @@ def leer(arreglo):
 
 def proyecto_actualizado(arreglo):
     if len(arreglo) == 0:
-        print('No hay datos cargados... \n')
+        print('\nNo hay datos cargados...')
         return
 
     search_rep = input('Ingrese un repositorio a buscar: ')
@@ -250,7 +253,6 @@ def proyecto_actualizado(arreglo):
 
     if not tiene_rep:
         print('\nNo se encontro el repositorio ' + search_rep)
-        print()
 
 
 def display_matriz(matriz):
@@ -262,12 +264,18 @@ def display_matriz(matriz):
 
 def display_mes(matriz, mes):
     print('\n{:^10} | {:^10}'.format('Mes', 'Proyectos Totales'))
-    formato = '{:<10} | {:^10}'.format(matriz[mes+1][0], matriz[mes+1][2])
+    formato = '{:<10} | {:^10}'.format(matriz[mes-1][0], matriz[mes-1][2])
     print(formato)
 
 
-def popularidad(arreglo, matriz, acu_stars, acu_proyectos):
-    likes_por_estrellas(arreglo)
+def popularidad(arreglo, ind):
+    matriz = [] * 12
+    acu_stars = [0] * 12
+    acu_proyectos = [0] * 12
+
+    if ind == 0:
+        likes_por_estrellas(arreglo)
+
     meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
     for i in range(len(arreglo)):
@@ -284,9 +292,36 @@ def popularidad(arreglo, matriz, acu_stars, acu_proyectos):
     mes = int(input('Ingrese un Mes (1 - 12): '))
     display_mes(matriz, mes)
 
+    return matriz
 
 
+def guardar_populares(matriz):
+    m = open('matriz.csv', 'wb')
+
+    for i in range(len(matriz)):
+        if matriz[i][2] != 0:
+            v = Matriz(matriz[i][0], matriz[i][1], matriz[i][2])
+            pickle.dump(v, m)
+
+    m.flush()
+    m.close()
 
 
+def display_bin(matriz):
+    print('{:^20} | {:^20} | {:^20}'.format(matriz.mes, matriz.estrellas, matriz.cant_proyectos))
 
 
+def mostrar_archivo():
+    if not os.path.exists('matriz.csv'):
+        print('Debe inicializar la opcion 6 primero...')
+        return
+
+    print(f'Contenido actual del archivo "matriz.csv"\n')
+    m = open('matriz.csv', 'rb')
+    t = os.path.getsize('matriz.csv')
+    print('{:^20} | {:^20} | {:^20}'.format('Mes', 'Estrellas', 'Proyectos Totales'))
+    while m.tell() < t:
+        mat = pickle.load(m)
+        display_bin(mat)
+    m.flush()
+    m.close()
