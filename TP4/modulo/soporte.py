@@ -1,6 +1,5 @@
 import os.path
 import datetime
-import random
 import pickle
 
 
